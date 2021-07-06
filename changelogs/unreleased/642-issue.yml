@@ -1,0 +1,5 @@
+---
+title: fix issue 642, consider outstanding outbound tx when choosing asgard vault
+merge_request: 1253
+author:
+type: fixed

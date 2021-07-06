@@ -1,0 +1,6 @@
+---
+title: Add MinSlashPointsForBadBehavior , give new nodes a churn cycle before consider
+  as bad validators
+merge_request: 1459
+author:
+type: changed

@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  binance-mock:
+    container_name: binance-mock
+    hostname: binance-mock
+    image: registry.gitlab.com/thorchain/bepswap/mock-binance
+    ports:
+      - "26660:26660"

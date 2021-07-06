@@ -1,0 +1,6 @@
+---
+title: stop sending tokens that belongs to pools which are not enabled to yggdrasil
+  vault
+merge_request: 1259
+author:
+type: fixed

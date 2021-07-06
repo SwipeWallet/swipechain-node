@@ -1,0 +1,95 @@
+{
+    "genesis_time": "2021-07-05T19:38:35.340549374Z",
+    "chain_id": "swipechain",
+    "consensus_params": {
+        "block": {
+            "max_bytes": "22020096",
+            "max_gas": "-1",
+            "time_iota_ms": "1000"
+        },
+        "evidence": {
+            "max_age_num_blocks": "100000",
+            "max_age_duration": "172800000000000"
+        },
+        "validator": {
+            "pub_key_types": [
+                "ed25519"
+            ]
+        }
+    },
+    "app_hash": "",
+    "app_state": {
+        "bank": {
+            "send_enabled": true,
+            "params": {
+                "default_send_enabled": false
+            }
+        },
+        "params": null,
+        "supply": {
+            "supply": []
+        },
+        "thorchain": {
+            "pools": [],
+            "stakers": [],
+            "observed_tx_in_voters": [],
+            "observed_tx_out_voters": [],
+            "txouts": [],
+            "node_accounts": [
+                {
+                    "node_address": "tthor1dmfjzktmwd4jt5c4y4pvhwkrmhqpfd48x99qad",
+                    "version": "0.19.0",
+                    "ip_address": "127.0.0.1",
+                    "status": "Active",
+                    "active_block_height": "0",
+                    "bond_address": "tthor1dmfjzktmwd4jt5c4y4pvhwkrmhqpfd48x99qad",
+                    "signer_membership": [],
+                    "validator_cons_pub_key": "sswpecpub1zcjduepqgjgta2396rvwl5rnl0xm6hass052cvdmuezdfa4y97kh0wn7vxjsw5ruyj",
+                    "pub_key_set": {
+                        "secp256k1": "sswpepub1addwnpepqvsjmyn8agjt3pwdc7l8a7v89gr2y8lwsnla23a398ysmhu3frhvgvyawdq",
+                        "ed25519": "sswpepub1addwnpepqvsjmyn8agjt3pwdc7l8a7v89gr2y8lwsnla23a398ysmhu3frhvgvyawdq"
+                    }
+                }
+            ],
+            "vaults": [],
+            "gas": {},
+            "reserve": "0",
+            "ban_voters": [],
+            "last_signed_height": "0",
+            "last_chain_heights": {},
+            "reserve_contributors": [],
+            "vault_data": {
+                "bond_reward_rune": "0",
+                "total_bond_units": "0",
+                "total_reserve": "0",
+                "total_bep2_rune": "0"
+            },
+            "tss_voters": [],
+            "tss_keysign_fail_voters": [],
+            "keygen_blocks": [],
+            "all_tx_markers": {},
+            "errata_tx_voters": [],
+            "msg_swaps": [],
+            "network_fees": [],
+            "network_fee_voters": []
+        },
+        "genutil": {
+            "gentxs": []
+        },
+        "auth": {
+            "params": {
+                "max_memo_characters": "256",
+                "tx_sig_limit": "7",
+                "tx_size_cost_per_byte": "10",
+                "sig_verify_cost_ed25519": "590",
+                "sig_verify_cost_secp256k1": "1000"
+            },
+            "accounts": []
+        },
+        "transfer": {
+            "params": {
+                "send_enabled": false
+            }
+        }
+    }
+}

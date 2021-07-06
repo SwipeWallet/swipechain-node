@@ -1,0 +1,5 @@
+---
+title: fix API query bug where specifying a block height persists across queries
+merge_request: 1283
+author: Son of Odin
+type: fixed

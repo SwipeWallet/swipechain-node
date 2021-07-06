@@ -1,0 +1,6 @@
+---
+title: fix a bug that txoutitem's vault pubkey get changed while processing lack of
+  signing, and a new way to slash lack of observing
+merge_request: 1312
+author:
+type: fixed

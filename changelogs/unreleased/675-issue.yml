@@ -1,0 +1,5 @@
+---
+title: fix bifrost can't start due to TSS can't connect any peer issue
+merge_request: 1310
+author:
+type: fixed

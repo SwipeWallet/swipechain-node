@@ -1,0 +1,33 @@
+BRANCH?=$(shell git rev-parse --abbrev-ref HEAD | sed 's/master/mocknet/g')
+GITREF=$(shell git rev-parse --short HEAD)
+
+# pull branch name from CI, if available
+ifdef CI_COMMIT_BRANCH
+	BRANCH=$(shell echo ${CI_COMMIT_BRANCH} | sed 's/master/mocknet/g')
+endif
+
+.PHONY: aws-login
+aws-login:
+	aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
+	aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
+	aws configure set region ${AWS_REGION}
+	$(shell aws ecr get-login --no-include-email --region ap-southeast-2)
+
+.PHONY: aws-ci-login
+aws-ci-login:
+	aws configure set aws_access_key_id ${AWS_CI_ACCESS_KEY_ID}
+	aws configure set aws_secret_access_key ${AWS_CI_SECRET_ACCESS_KEY}
+	aws configure set region ${AWS_CI_REGION}
+
+# ------------------------------- GitLab ------------------------------- #
+
+docker-gitlab-login:
+	docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+
+docker-gitlab-push:
+	./build/docker/semver_tags.sh registry.gitlab.com/thorchain/thornode ${BRANCH} $(shell cat version) | xargs -n1 | grep registry | xargs -n1 docker push
+	docker push registry.gitlab.com/thorchain/thornode:${GITREF}
+
+docker-gitlab-build:
+	docker build -f build/docker/Dockerfile $(shell sh ./build/docker/semver_tags.sh registry.gitlab.com/thorchain/thornode ${BRANCH} $(shell cat version)) -t registry.gitlab.com/thorchain/thornode:${GITREF} --build-arg TAG=${BRANCH} .
+# ------------------------------------------------------------------ #

@@ -1,0 +1,35 @@
+{
+  "int_64_values": {
+    "BadValidatorRate": 60,
+    "BlocksPerYear": 6311390,
+    "DesireValidatorSet": 12,
+    "DoubleSignMaxAge": 24,
+    "EmissionCurve": 6,
+    "FailKeySignSlashPoints": 2,
+    "FailKeygenSlashPoints": 720,
+    "FundMigrationInterval": 10,
+    "LackOfObservationPenalty": 2,
+    "MinimumBondInRune": 100000000,
+    "MinimumNodesForBFT": 4,
+    "MinimumNodesForYggdrasil": 6,
+    "NewPoolCycle": 50000,
+    "ObserveSlashPoints": 1,
+    "OldValidatorRate": 60,
+    "RotatePerBlockHeight": 60,
+    "RotateRetryBlocks": 720,
+    "SigningTransactionPeriod": 300,
+    "StakeLockUpBlocks": 0,
+    "TransactionFee": 100000000,
+    "ValidatorRotateInNumBeforeFull": 2,
+    "ValidatorRotateNumAfterFull": 1,
+    "ValidatorRotateOutNumBeforeFull": 1,
+    "WhiteListGasAsset": 1000,
+    "YggFundLimit": 50
+  },
+  "bool_values": {
+    "StrictBondStakeRatio": false
+  },
+  "string_values": {
+    "DefaultPoolStatus": "Enabled"
+  }
+}

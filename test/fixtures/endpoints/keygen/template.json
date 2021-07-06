@@ -1,0 +1,17 @@
+{
+    "keygen_block": {
+        "height": "1718",
+        "keygens": [
+            {
+                "id": "asddfasdfasdf",
+                "type": "asgard",
+                "members": [
+                    "tthorpub1addwnpepq2kdyjkm6y9aa3kxl8wfaverka6pvkek2ygrmhx6sj3ec6h0fegws6fcmjl",
+                    "tthorpub1addwnpepqt7qug8vk9r3saw8n4r803ydj2g3dqwx0mvq5akhnze86fc536xcycgtrnv",
+                    "tthorpub1addwnpepqdqvd4r84lq9m54m5kk9sf4k6kdgavvch723pcgadulxd6ey9u70k6zq8qe"
+                ]
+            }
+        ]
+    },
+    "signature": "VTNxIe46fCm22NkzMqfZwHxl2c1ZuJJttf42RSU7M99lP3bTTdwBiCVQWIkzq2zFYTYjnQX5wBnkipjGkvw5jw=="
+}

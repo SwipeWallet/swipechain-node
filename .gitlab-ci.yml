@@ -1,0 +1,166 @@
+image: golang:1.15.6
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH
+    - if: $CI_MERGE_REQUEST_IID
+
+cache:
+  paths:
+    - .cache
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://docker:2376
+  DOCKER_TLS_CERTDIR: "/certs"
+  DOCKER_TLS_VERIFY: 1
+  DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+
+before_script:
+  - mkdir -p .cache
+  - export GOPATH="$CI_PROJECT_DIR/.cache"
+
+stages:
+  - test
+  - build
+  - smoke-test
+  - release
+
+unit-tests:
+  stage: test
+  cache: {}
+  tags:
+    - thorchain
+  except:
+    - schedules
+  coverage: '/total:\s+\(statements\)\s+(\d+.\d+\%)/'
+  before_script:
+    - apt update
+    - apt install -y protobuf-compiler
+    - make protob
+  script:
+    - make test-coverage
+    - go tool cover -func=coverage.out
+    - go tool cover -html=coverage.out -o coverage.html
+
+lint-code:
+  image: golangci/golangci-lint:v1.32.0
+  stage: test
+  tags:
+    - thorchain
+  except:
+    - schedules
+  before_script:
+    - go get mvdan.cc/gofumpt
+    - apt update
+    - apt install -y protobuf-compiler
+    - make protob
+  script:
+    - make lint-managers
+    - golangci-lint run -v --skip-files ".*\\.pb\\.go$"
+
+shellcheck:
+  image: koalaman/shellcheck-alpine:latest
+  stage: test
+  tags:
+    - thorchain
+  except:
+    - schedules
+  before_script:
+    - shellcheck --version
+  script:
+    - find . -type f -name "*.*sh" | xargs shellcheck --exclude SC1091,SC3020,SC3040
+
+shfmt:
+  image: mvdan/shfmt:v3.3.0-alpine
+  stage: test
+  tags:
+    - thorchain
+  except:
+    - schedules
+  before_script:
+    - shfmt -version
+  script:
+    - find . -type f -name "*.*sh" | xargs shfmt -i 2 -ci -d
+
+build-thornode:
+  stage: build
+  image: docker:19.03.12
+  tags:
+    - thorchain
+  only:
+    - master # build mocknet image
+    - develop # build mocknet image multichain
+    - testnet
+    - chaosnet
+    - mainnet
+    - testnet-multichain
+    - chaosnet-multichain
+  services:
+    - docker:19.03.12-dind
+  before_script:
+    # https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27384#note_497228752
+    - |
+      for i in $(seq 1 30)
+      do
+          docker info && break
+          echo "Waiting for docker to start"
+          sleep 1s
+      done
+    - apk -U add make git jq curl protoc
+    - make docker-gitlab-login
+  script:
+    - make docker-gitlab-build
+    - make docker-gitlab-push
+
+smoke-test:
+  stage: smoke-test
+  image: docker/compose:alpine-1.27.4
+  tags:
+    - thorchain
+  services:
+    - docker:19.03.12-dind
+  artifacts:
+    when: on_failure
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
+    paths:
+      - ./logs/
+  except:
+    - schedules
+  environment:
+    name: integration
+  variables:
+    HEIMDALL_REPO: https://gitlab.com/thorchain/heimdall.git
+    HEIMDALL_IMAGE: registry.gitlab.com/thorchain/heimdall:develop
+    MIDGARD_REPO: https://gitlab.com/thorchain/midgard.git
+    MIDGARD_IMAGE: registry.gitlab.com/thorchain/midgard:develop
+  before_script:
+    # https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27384#note_497228752
+    - |
+      for i in $(seq 1 30)
+      do
+          docker info && break
+          echo "Waiting for docker to start"
+          sleep 1s
+      done
+    - apk -U add git make protoc
+    - (git clone --single-branch -b $CI_COMMIT_REF_NAME $HEIMDALL_REPO && cd ./heimdall && IMAGE_NAME=$HEIMDALL_IMAGE make build && cd ..) || (git clone --single-branch -b develop $HEIMDALL_REPO && docker pull $HEIMDALL_IMAGE)
+    - (git clone --single-branch -b $CI_COMMIT_REF_NAME $MIDGARD_REPO && cd ./midgard && IMAGE_NAME=$MIDGARD_IMAGE make build && cd ..) || (git clone --single-branch -b develop $MIDGARD_REPO && docker pull $MIDGARD_IMAGE)
+    - make -C build/docker reset-mocknet-standalone
+  script:
+    - cd ./heimdall && IMAGE_NAME=$HEIMDALL_IMAGE make smoke
+  after_script:
+    - ./scripts/docker_logs.sh
+
+release:
+  stage: release
+  tags:
+    - thorchain
+  image: registry.gitlab.com/thorchain/release-tool:latest
+  only:
+    - master
+  except:
+    - schedules
+  script:
+    - release-tool changelog
